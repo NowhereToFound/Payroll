@@ -1,0 +1,180 @@
+<Window x:Class="PPS.Views.Pages.PayslipWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:PPS.Converters"
+        Title="Payslip Preview"
+        Height="700" Width="620"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/AppStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:DecimalToCurrencyConverter x:Key="Currency"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <Border Margin="28" Background="White" CornerRadius="10">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000" Opacity="0.07" BlurRadius="20" ShadowDepth="2"/>
+                </Border.Effect>
+                <StackPanel>
+                    <!-- Payslip Header -->
+                    <Border Background="{StaticResource PrimaryDarkBrush}" Padding="28,20" CornerRadius="10,10,0,0">
+                        <StackPanel>
+                            <TextBlock Text="{Binding CompanyName}"
+                                       FontSize="18" FontWeight="Black" Foreground="White"/>
+                            <TextBlock Text="{Binding CompanyAddress}"
+                                       FontSize="12" Foreground="{StaticResource SidebarTextBrush}" Margin="0,2,0,0"/>
+                            <Rectangle Height="1" Fill="{StaticResource AccentBrush}" Margin="0,12,0,10"/>
+                            <TextBlock Text="PAYSLIP" FontSize="14" FontWeight="SemiBold"
+                                       Foreground="{StaticResource AccentBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Margin="28">
+                        <!-- Employee Info -->
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="EMPLOYEE" Style="{StaticResource LabelText}"/>
+                                <TextBlock Text="{Binding Record.Employee.FullName}"
+                                           FontSize="15" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <TextBlock Text="{Binding Record.Employee.Position}"
+                                           Style="{StaticResource BodyText}"/>
+                                <TextBlock Text="{Binding Record.Employee.Department}"
+                                           Style="{StaticResource BodyText}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                <TextBlock Text="PAY PERIOD" Style="{StaticResource LabelText}"/>
+                                <TextBlock FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}">
+                                    <Run Text="{Binding Record.PayPeriodStart, StringFormat='MMM d'}"/>
+                                    <Run Text=" – "/>
+                                    <Run Text="{Binding Record.PayPeriodEnd, StringFormat='MMM d, yyyy'}"/>
+                                </TextBlock>
+                                <TextBlock Text="DATE GENERATED" Style="{StaticResource LabelText}" Margin="0,8,0,0"/>
+                                <TextBlock Text="{Binding Record.GeneratedDate, StringFormat='MMM d, yyyy'}"
+                                           FontSize="13"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="{StaticResource BorderBrush}" Margin="0,0,0,16"/>
+
+                        <!-- Earnings -->
+                        <TextBlock Text="EARNINGS" Style="{StaticResource LabelText}" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Basic Pay"/>
+                            <TextBlock Text="{Binding Record.BasicPay, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right" FontWeight="SemiBold"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Overtime Pay"/>
+                            <TextBlock Text="{Binding Record.OvertimePay, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="GROSS PAY" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Record.GrossPay, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right" FontWeight="Bold"
+                                       Foreground="{StaticResource PrimaryBrush}"/>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="{StaticResource BorderBrush}" Margin="0,12,0,12"/>
+
+                        <!-- Attendance Deductions -->
+                        <TextBlock Text="ATTENDANCE DEDUCTIONS" Style="{StaticResource LabelText}" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Tardiness"/>
+                            <TextBlock Text="{Binding Record.TardinessDeduction, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right" Foreground="{StaticResource ErrorBrush}"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Absences"/>
+                            <TextBlock Text="{Binding Record.AbsenceDeduction, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right" Foreground="{StaticResource ErrorBrush}"/>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="{StaticResource BorderBrush}" Margin="0,12,0,12"/>
+
+                        <!-- Government Deductions -->
+                        <TextBlock Text="MANDATORY DEDUCTIONS" Style="{StaticResource LabelText}" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="SSS Contribution"/>
+                            <TextBlock Text="{Binding Record.SSS_Employee, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="PhilHealth Contribution"/>
+                            <TextBlock Text="{Binding Record.PhilHealth_Employee, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Pag-IBIG Contribution"/>
+                            <TextBlock Text="{Binding Record.PagIBIG_Employee, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="{StaticResource BorderBrush}" Margin="0,12,0,12"/>
+
+                        <!-- Tax -->
+                        <TextBlock Text="TAX" Style="{StaticResource LabelText}" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Taxable Income"/>
+                            <TextBlock Text="{Binding Record.TaxableIncome, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Withholding Tax (BIR TRAIN)"/>
+                            <TextBlock Text="{Binding Record.WithholdingTax, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right" Foreground="{StaticResource ErrorBrush}"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <TextBlock Text="Loan Deductions"/>
+                            <TextBlock Text="{Binding Record.LoanDeductions, Converter={StaticResource Currency}}"
+                                       HorizontalAlignment="Right" Foreground="{StaticResource ErrorBrush}"/>
+                        </Grid>
+
+                        <Rectangle Height="2" Fill="{StaticResource PrimaryBrush}" Margin="0,12,0,12"/>
+
+                        <!-- Net Pay -->
+                        <Grid>
+                            <TextBlock Text="NET PAY" FontSize="16" FontWeight="Black"
+                                       Foreground="{StaticResource PrimaryBrush}"/>
+                            <TextBlock Text="{Binding Record.NetPay, Converter={StaticResource Currency}}"
+                                       FontSize="22" FontWeight="Black"
+                                       Foreground="{StaticResource PrimaryBrush}"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Border Grid.Row="1" Background="White"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0"
+                Padding="28,14">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Close" Style="{StaticResource OutlineButton}" Margin="0,0,12,0"
+                        Click="CloseButton_Click"/>
+                <Button Content="🖨 Print / Export PDF"
+                        Command="{Binding PrintCommand}"
+                        Style="{StaticResource PrimaryButton}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

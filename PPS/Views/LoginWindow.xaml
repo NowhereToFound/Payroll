@@ -1,0 +1,173 @@
+<Window x:Class="PPS.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SDSC Payroll System — Login"
+        Height="560" Width="920"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/AppStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border CornerRadius="14" ClipToBounds="True">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="420"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ── Left: School Branding Panel ─────────────────────────── -->
+            <Border Grid.Column="0" Background="{StaticResource PrimaryDarkBrush}">
+                <Grid>
+                    <!-- Background gradient decoration -->
+                    <Ellipse Width="300" Height="300"
+                             Margin="-150,-150,0,0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#3052A96A" Offset="0"/>
+                                <GradientStop Color="Transparent" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Ellipse Width="200" Height="200"
+                             Margin="0,0,-100,-100"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Bottom">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#207DC494" Offset="0"/>
+                                <GradientStop Color="Transparent" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+
+                    <StackPanel VerticalAlignment="Center" Margin="40,0">
+                        <!-- SDSC School Logo -->
+                        <Border Width="90" Height="90"
+                                CornerRadius="45"
+                                Background="White"
+                                HorizontalAlignment="Left"
+                                Margin="0,0,0,24"
+                                Padding="6">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#52A96A" Opacity="0.35" BlurRadius="20" ShadowDepth="0"/>
+                            </Border.Effect>
+                            <Image Source="pack://application:,,,/SDSCLogo.jpg"
+                                   Stretch="Uniform"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Border>
+
+                        <TextBlock Text="St. Dominic"
+                                   FontSize="26" FontWeight="Black"
+                                   Foreground="White" LineHeight="32"/>
+                        <TextBlock Text="Savio College"
+                                   FontSize="26" FontWeight="Black"
+                                   Foreground="{StaticResource AccentBrush}" LineHeight="32"/>
+
+                        <Rectangle Height="3" Width="60"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,20,0,20"
+                                   Fill="{StaticResource AccentBrush}"
+                                   RadiusX="2" RadiusY="2"/>
+
+                        <TextBlock Text="Payroll Processing System"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource SidebarTextBrush}"/>
+                        <TextBlock Text="Philippine 2026 Statutory Compliance"
+                                   FontSize="11"
+                                   Foreground="#80C8D8E8"
+                                   Margin="0,4,0,0"/>
+
+                        <!-- Compliance badges -->
+                        <WrapPanel Margin="0,32,0,0" MaxWidth="340">
+                            <Border Background="#2052A96A" CornerRadius="4" Padding="8,4" Margin="0,0,6,6">
+                                <TextBlock Text="SSS 2026" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
+                            </Border>
+                            <Border Background="#2052A96A" CornerRadius="4" Padding="8,4" Margin="0,0,6,6">
+                                <TextBlock Text="PhilHealth" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
+                            </Border>
+                            <Border Background="#2052A96A" CornerRadius="4" Padding="8,4" Margin="0,0,6,6">
+                                <TextBlock Text="Pag-IBIG" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
+                            </Border>
+                            <Border Background="#2052A96A" CornerRadius="4" Padding="8,4" Margin="0,0,6,6">
+                                <TextBlock Text="BIR TRAIN" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
+                            </Border>
+                        </WrapPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ── Right: Login Form ────────────────────────────────────── -->
+            <Border Grid.Column="1" Background="White">
+                <Grid>
+                    <!-- Close button -->
+                    <Button Content="✕" Width="32" Height="32"
+                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Margin="0,10,10,0"
+                            Click="CloseButton_Click"
+                            Background="Transparent" BorderThickness="0"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            FontSize="14" Cursor="Hand"/>
+
+                    <StackPanel VerticalAlignment="Center" Margin="50,0">
+                        <TextBlock Text="Welcome Back" Style="{StaticResource HeadingLarge}" Margin="0,0,0,6"/>
+                        <TextBlock Text="Sign in to access the payroll system"
+                                   Style="{StaticResource BodyText}" Margin="0,0,0,36"/>
+
+                        <!-- Error message -->
+                        <Border Style="{StaticResource ErrorMessage}"
+                                Visibility="{Binding IsLoginFailed, Converter={StaticResource BoolToVisibility}}"
+                                Margin="0,0,0,16">
+                            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}" FontSize="13"/>
+                        </Border>
+
+                        <!-- Username -->
+                        <TextBlock Text="USERNAME" Style="{StaticResource LabelText}"/>
+                        <TextBox x:Name="UsernameBox"
+                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FormTextBox}"
+                                 Margin="0,0,0,16"
+                                 KeyDown="InputBox_KeyDown"/>
+
+                        <!-- Password -->
+                        <TextBlock Text="PASSWORD" Style="{StaticResource LabelText}"/>
+                        <PasswordBox x:Name="PasswordBox"
+                                     Style="{StaticResource FormPasswordBox}"
+                                     Margin="0,0,0,32"
+                                     KeyDown="PasswordBox_KeyDown"/>
+
+                        <Button Content="SIGN IN"
+                                Command="{Binding LoginCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Height="46" FontSize="14"/>
+
+                        <TextBlock Text="Default: admin / Admin@1234"
+                                   FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Center" Margin="0,16,0,0"
+                                   Opacity="0.6"/>
+                    </StackPanel>
+
+                    <!-- Loading indicator -->
+                    <Grid Style="{StaticResource BusyOverlay}"
+                          Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="Signing in…" FontSize="14"
+                                       Foreground="{StaticResource PrimaryBrush}"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

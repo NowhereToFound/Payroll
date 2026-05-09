@@ -1,0 +1,58 @@
+## ── .NET / Visual Studio ──────────────────────────────────────────────────
+*.user
+*.suo
+.vs/
+bin/
+obj/
+*.DotSettings.user
+
+## ── EF Migrations design-time artifacts ──────────────────────────────────
+# (keep the Migrations folder itself — only ignore the snapshot if you want)
+
+## ── Build output ──────────────────────────────────────────────────────────
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## ── NuGet ─────────────────────────────────────────────────────────────────
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!**/packages/build/
+
+## ── Rider / JetBrains ─────────────────────────────────────────────────────
+.idea/
+*.sln.iml
+
+## ── VS Code ───────────────────────────────────────────────────────────────
+.vscode/
+
+## ── Sensitive / local config ──────────────────────────────────────────────
+# appsettings contains local SQL Server connection string — exclude from VCS
+appsettings.json
+PPS/appsettings.json
+
+# Keep the example template (rename & fill in locally)
+!appsettings.example.json
+!PPS/appsettings.example.json
+
+## ── Windows ───────────────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+## ── macOS ─────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride

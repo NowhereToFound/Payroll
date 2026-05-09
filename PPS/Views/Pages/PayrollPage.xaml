@@ -1,0 +1,216 @@
+<UserControl x:Class="PPS.Views.Pages.PayrollPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:PPS.Converters">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/AppStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter  x:Key="BoolToVisibility"/>
+            <converters:NullToVisibilityConverter  x:Key="NullToVisibility"/>
+            <converters:DecimalToCurrencyConverter x:Key="Currency"/>
+            <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Style="{StaticResource HeadingLarge}" Text="Payroll Processing"/>
+            <TextBlock Style="{StaticResource BodyText}" Text="Semi-monthly payroll computation using Philippine 2026 Step-Down Algorithm"/>
+        </StackPanel>
+
+        <!-- Period Selector + Actions -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Padding="20,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="YEAR" Style="{StaticResource LabelText}"/>
+                    <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}"
+                              Style="{StaticResource FormComboBox}" Width="80"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="MONTH" Style="{StaticResource LabelText}"/>
+                    <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding SelectedMonth}"
+                              Style="{StaticResource FormComboBox}" Width="70"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="PERIOD" Style="{StaticResource LabelText}"/>
+                    <ComboBox ItemsSource="{Binding Periods}" SelectedItem="{Binding SelectedPeriod}"
+                              Style="{StaticResource FormComboBox}" Width="160"/>
+                </StackPanel>
+
+                <Button Grid.Column="6"
+                        Content="▶ Run Payroll for All"
+                        Command="{Binding RunPayrollForAllCommand}"
+                        Style="{StaticResource AccentButton}"
+                        VerticalAlignment="Bottom"/>
+                <Button Grid.Column="8"
+                        Content="✔ Post All"
+                        Command="{Binding PostAllCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        VerticalAlignment="Bottom"
+                        Visibility="{Binding AllPosted, Converter={StaticResource InverseBoolToVisibility}}"/>
+                <Button Grid.Column="10"
+                        Content="Refresh"
+                        Command="{Binding LoadCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        VerticalAlignment="Bottom"/>
+            </Grid>
+        </Border>
+
+        <!-- Messages -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <Border Style="{StaticResource ErrorMessage}"
+                    Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibility}}"
+                    Margin="0,0,0,6">
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"/>
+            </Border>
+            <Border Style="{StaticResource SuccessMessage}"
+                    Visibility="{Binding SuccessMessage, Converter={StaticResource NullToVisibility}}">
+                <TextBlock Text="{Binding SuccessMessage}" Foreground="{StaticResource SuccessBrush}"/>
+            </Border>
+        </StackPanel>
+
+        <!-- Payroll Grid -->
+        <Border Grid.Row="3" Style="{StaticResource Card}" Padding="0">
+            <DataGrid ItemsSource="{Binding Records}"
+                      SelectedItem="{Binding SelectedRecord}"
+                      Style="{StaticResource AppDataGrid}"
+                      ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="EMPLOYEE"     Binding="{Binding Employee.FullName}"  Width="200"/>
+                    <DataGridTemplateColumn Header="BASIC PAY" Width="110">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding BasicPay, Converter={StaticResource Currency}}"
+                                           Style="{StaticResource CurrencyText}" Margin="12,0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="GROSS PAY" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding GrossPay, Converter={StaticResource Currency}}"
+                                           Style="{StaticResource CurrencyText}" Margin="12,0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="SSS"      Binding="{Binding SSS_Employee, StringFormat='₱{0:N2}'}"      Width="85"/>
+                    <DataGridTextColumn Header="PhilHlth" Binding="{Binding PhilHealth_Employee, StringFormat='₱{0:N2}'}" Width="85"/>
+                    <DataGridTextColumn Header="PagIBIG"  Binding="{Binding PagIBIG_Employee, StringFormat='₱{0:N2}'}"  Width="80"/>
+                    <DataGridTextColumn Header="TAX"      Binding="{Binding WithholdingTax, StringFormat='₱{0:N2}'}"    Width="90"/>
+                    <DataGridTextColumn Header="LOANS"    Binding="{Binding LoanDeductions, StringFormat='₱{0:N2}'}"   Width="80"/>
+                    <DataGridTemplateColumn Header="NET PAY" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding NetPay, Converter={StaticResource Currency}}"
+                                           FontSize="14" FontWeight="Bold"
+                                           Foreground="#1E6E42" Margin="12,0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="STATUS" Width="90">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="4" Padding="8,2" Margin="8,0" HorizontalAlignment="Left">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="#E8F5E9"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPosted}" Value="False">
+                                                    <Setter Property="Background" Value="#FFF3E0"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock FontSize="11" FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Posted"/>
+                                                <Setter Property="Foreground" Value="#2E7D32"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPosted}" Value="False">
+                                                        <Setter Property="Text" Value="Draft"/>
+                                                        <Setter Property="Foreground" Value="#E67E00"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="ACTIONS" Width="150">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="8,0">
+                                    <Button Content="Payslip"
+                                            Command="{Binding DataContext.ViewPayslipCommand,
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource OutlineButton}"
+                                            Padding="8,4" FontSize="11" Margin="0,0,6,0"/>
+                                    <Button Content="Post"
+                                            Command="{Binding DataContext.PostSingleCommand,
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Padding="8,4" FontSize="11"
+                                            Visibility="{Binding IsPosted, Converter={StaticResource InverseBoolToVisibility}}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Total Footer -->
+        <Border Grid.Row="4" Background="White" CornerRadius="8"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                Padding="20,12" Margin="0,8,0,0">
+            <Grid>
+                <TextBlock Text="PERIOD TOTAL NET PAY" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Text="{Binding PeriodTotalNet, Converter={StaticResource Currency}}"
+                           FontSize="20" FontWeight="Black"
+                           Foreground="{StaticResource PrimaryBrush}"
+                           HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+
+        <!-- Loading -->
+        <Grid Grid.RowSpan="5" Style="{StaticResource BusyOverlay}"
+              Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
+            <TextBlock Text="Processing payroll…" FontSize="14"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{StaticResource PrimaryBrush}"/>
+        </Grid>
+    </Grid>
+</UserControl>
